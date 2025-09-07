@@ -1,0 +1,11 @@
+services:
+  keycloak:
+    image: ${REGISTRY_HOST}/quay.io/keycloak/keycloak:latest
+    restart: always
+    environment:
+      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+    command:
+      - start-dev
+    ports:
+      - "8080:8080"
