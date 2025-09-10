@@ -14,5 +14,5 @@ services:
     ports:
       - "8443:8443"
     volumes:
-      - ./letsencrypt:/etc/letsencrypt
+      - /opt/letsencrypt:/etc/letsencrypt
 
