@@ -1,6 +1,5 @@
-#!/bin/bash
-
-# ヘルプ表示関数
+#!/bin/bash# ヘルプ表示関数
+set -euo pipefail
 show_help() {
   echo "Usage: $0 -r <registry-host> -u <registry-user> -c <client-host>"
   echo "  -r : レジストリホスト名（必須）"
@@ -45,7 +44,7 @@ fi
 echo "🔍 レジストリホストIP: ${REGISTRY_HOST_IP}"
 
 # 証明書ファイルの存在確認
-REMOTE_CERT_PATH="./letsencrypt/live/${REGISTRY_HOST}/fullchain.pem"
+REMOTE_CERT_PATH="/opt/letsencrypt/live/${REGISTRY_HOST}/fullchain.pem"
 ssh "${REGISTRY_HOST_USER}@${REGISTRY_HOST}" "test -f ${REMOTE_CERT_PATH}"
 if [ $? -ne 0 ]; then
   echo "❌ 証明書ファイルが存在しません: ${REMOTE_CERT_PATH}"
