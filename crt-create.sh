@@ -1,17 +1,59 @@
 #!/usr/bin/env bash
 set -euo pipefail
-DOMAIN=$1
+
+show_help() {
+  echo "Usage: $0 -m <machine_name>"
+  echo ""
+  echo "Options:"
+  echo "  -m <machine_name>   Required. Machine name used as the certificate domain."
+  echo "  -h                  Show this help message and exit."
+}
+
+# 初期化
+MACHINE_NAME=""
+
+# 引数解析
+while getopts ":m:h" opt; do
+  case ${opt} in
+    m )
+      MACHINE_NAME=$OPTARG
+      ;;
+    h )
+      show_help
+      exit 0
+      ;;
+    \? )
+      echo "❌ Invalid option: -$OPTARG" >&2
+      show_help
+      exit 1
+      ;;
+    : )
+      echo "❌ Option -$OPTARG requires an argument." >&2
+      show_help
+      exit 1
+      ;;
+  esac
+done
+
+# 必須引数チェック
+if [[ -z "${MACHINE_NAME}" ]]; then
+  echo "❌ Machine name is required."
+  show_help
+  exit 1
+fi
+
+DOMAIN="${MACHINE_NAME}"
 BASE_DIR="/opt/letsencrypt/live/${DOMAIN}"
 
-mkdir -p "${BASE_DIR}"
+echo "👉 Creating directory: ${BASE_DIR}"
+sudo mkdir -p "${BASE_DIR}"
 
-# 既存の証明書ファイルを強制削除（再生成対応）
-rm -f "${BASE_DIR}/privkey.pem" "${BASE_DIR}/fullchain.pem" \
-      "${BASE_DIR}/cert.pem" "${BASE_DIR}/key.pem"
+# 既存の証明書ファイルを削除
+sudo rm -f "${BASE_DIR}/privkey.pem" "${BASE_DIR}/fullchain.pem" \
+            "${BASE_DIR}/cert.pem" "${BASE_DIR}/key.pem"
 
 echo "👉 Generating SAN-enabled self-signed cert for ${DOMAIN} ..."
 
-# 一時的な OpenSSL 設定ファイルを作成
 SAN_CONFIG=$(mktemp)
 trap 'rm -f "${SAN_CONFIG}"' EXIT
 
@@ -29,7 +71,7 @@ C = JP
 ST = TOKYO
 L = TOKYO
 O = NO_COMPANY
-OU = NO=DEPARTMENT
+OU = NO_DEPARTMENT
 
 [ req_ext ]
 subjectAltName = @alt_names
@@ -37,22 +79,22 @@ subjectAltName = @alt_names
 [ alt_names ]
 DNS.1 = ${DOMAIN}
 EOF
-
-# 秘密鍵と証明書の生成（SAN付き）
-openssl req -x509 -nodes -newkey rsa:2048 \
+sudo openssl req -x509 -nodes -newkey rsa:2048 \
   -keyout "${BASE_DIR}/privkey.pem" \
   -out "${BASE_DIR}/fullchain.pem" \
   -days 365 \
   -config "${SAN_CONFIG}"
 
-# シンボリックリンク（Let's Encrypt 風の構造を再現）
-ln -sf fullchain.pem "${BASE_DIR}/cert.pem"
-ln -sf privkey.pem "${BASE_DIR}/key.pem"
+echo "👉 Changing ownership to ${USER}"
+sudo chown "${USER}:${USER}" "${BASE_DIR}/privkey.pem" "${BASE_DIR}/fullchain.pem"
+sudo chown "${USER}:${USER}" "${BASE_DIR}/fullchain.pem" "${BASE_DIR}/privkey.pem"
 
-# 権限を調整
+sudo ln -sf fullchain.pem "${BASE_DIR}/cert.pem"
+sudo ln -sf privkey.pem "${BASE_DIR}/key.pem"
+
 echo "👉 Setting permissions..."
-chmod 600 "${BASE_DIR}/privkey.pem" "${BASE_DIR}/key.pem"
-chmod 644 "${BASE_DIR}/fullchain.pem" "${BASE_DIR}/cert.pem"
+sudo chmod 600 "${BASE_DIR}/privkey.pem" "${BASE_DIR}/key.pem"
+sudo chmod 644 "${BASE_DIR}/fullchain.pem" "${BASE_DIR}/cert.pem"
 
 echo "✅ Done. Certificates are at ${BASE_DIR}"
 ls -l "${BASE_DIR}"

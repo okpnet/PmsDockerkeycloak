@@ -1,0 +1,100 @@
+{
+  "id": "pms",
+  "realm": "pms",
+  "enabled": true,
+  "registrationAllowed": true,
+  "verifyEmail": false,
+  "defaultRoles": [
+    "app-user"
+  ],
+  "roles": {
+    "realm": [
+      {
+        "name": "realm-admin",
+        "description": "Realm全体の管理者"
+      },
+      {
+        "name": "user-manager",
+        "description": "ユーザー管理権限"
+      },
+      {
+        "name": "section-manager",
+        "description": "セクション管理とユーザー管理（user-managerを継承）"
+      }
+    ],
+    "client": {
+      "qual-app": [
+        {
+          "name": "app-user",
+          "description": "アプリ利用者（全ユーザーに割当）"
+        },
+        {
+          "name": "section-user",
+          "description": "セクションに所属するユーザー（抽象）"
+        },
+        {
+          "name": "section-approver",
+          "description": "セクションの承認権限（section-userを継承）"
+        },
+        {
+          "name": "section-general",
+          "description": "セクションの一般ユーザー（section-userを継承）"
+        }
+      ]
+    }
+  },
+  "clients": [
+    {
+      "clientId": "qual-app",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": true,
+      "directAccessGrantsEnabled": true,
+      "defaultRoles": [
+        "app-user"
+      ]
+    }
+  ],
+  "groups": [
+    {
+      "name": "Sales",
+      "attributes": {
+        "description": [
+          "販売（営業）部門"
+        ]
+      }
+    },
+    {
+      "name": "Purchasing",
+      "attributes": {
+        "description": [
+          "購買部門"
+        ]
+      }
+    },
+    {
+      "name": "Production",
+      "attributes": {
+        "description": [
+          "生産部門"
+        ]
+      }
+    },
+    {
+      "name": "Shipping",
+      "attributes": {
+        "description": [
+          "出荷部門"
+        ]
+      }
+    },
+    {
+      "name": "Others",
+      "attributes": {
+        "description": [
+          "その他部門"
+        ]
+      }
+    }
+  ]
+}
