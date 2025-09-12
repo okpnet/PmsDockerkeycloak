@@ -39,6 +39,14 @@
         {
           "name": "section-general",
           "description": "セクションの一般ユーザー（section-userを継承）"
+        },
+        {
+          "name": "app-guest",
+          "description": "アプリの閲覧のみ権限"
+        },
+        {
+          "name": "app-passive",
+          "description": "アプリのパッシブユーザー（自アカウント登録のみ）"
         }
       ]
     }
@@ -93,6 +101,14 @@
       "attributes": {
         "description": [
           "その他部門"
+        ]
+      }
+    },
+    {
+      "name": "Guest",
+      "attributes": {
+        "description": [
+          "Gestユーザー（閲覧のみ）"
         ]
       }
     }
