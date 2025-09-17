@@ -60,6 +60,58 @@
       "directAccessGrantsEnabled": true,
       "defaultRoles": [
         "app-user"
+      ],
+      "protocolMappers": [
+        {
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-hardcoded-claim-mapper",
+          "name": "x-hasura-default-role",
+          "config": {
+            "claim.name": "https://hasura\\.io/jwt/claims.x-hasura-default-role",
+            "claim.value": "https://hasura\\.io/jwt/claims.x-hasura-default-role",
+            "jsonType.label": "String",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "lightweight.claim": "true",
+            "userinfo.token.claim": "true",
+            "access.tokenResponse.claim": "true",
+            "introspection.token.claim": "true"
+          }
+        },
+        {
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-client-role-mapper",
+          "name": "x-hasura-allowed-roles",
+          "config": {
+            "usermodel.clientRoleMapping.clientId": "qual-app",
+            "usermodel.clientRoleMapping.rolePrefix": "",
+            "multivalued": "true",
+            "claim.name": "https://hasura\\.io/jwt/claims.x-hasura-allowed-roles",
+            "jsonType.label": "String",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "lightweight.claim": "true",
+            "userinfo.token.claim": "true",
+            "introspection.token.claim": "true"
+          }
+        },
+        {
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-attribute-mapper",
+          "name": "x-hasura-attribute",
+          "config": {
+            "claim.name": "https://hasura\\.io/jwt/claims.x-hasura-attribute",
+            "jsonType.label": "String",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "lightweight.claim": "true",
+            "userinfo.token.claim": "true",
+            "introspection.token.claim": "true",
+            "multivalued": "true",
+            "aggregate.attrs": "true",
+            "user.attribute": ""
+          }
+        }
       ]
     }
   ],
